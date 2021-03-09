@@ -1,4 +1,4 @@
-# NoPass.me - Passwordless Email Authentication API
+# NoPass.me - Passwordless MFA Authentication API
 
 NoPass.me is an open-source passwordless account verification solution, available as a service over at [NoPass.me](https://nopass.me), or easily deployable on any AWS account with [serverless](https://serverless.com).
 
