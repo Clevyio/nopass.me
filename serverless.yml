@@ -57,7 +57,7 @@ provider:
       - name: ${self:service}-key-default
     usagePlan:
       quota:
-        limit: 2000
+        limit: 10000
         offset: 2
         period: MONTH
       throttle:
