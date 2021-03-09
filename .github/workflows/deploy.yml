@@ -39,6 +39,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - name: Deploy
+      run: npx serverless deploy --region eu-west-3 -s v1 --env prod
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
