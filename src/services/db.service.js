@@ -75,4 +75,21 @@ export default class DbService {
     return Items[0];
   }
 
+  /**
+   * Remove an entry from the database
+   *
+   * @param {String} PK
+   * @param {String} SK
+   */
+  static async removeEntry(PK, SK) {
+    const params = {
+      TableName,
+      Key: {
+        PK,
+        SK,
+      },
+    };
+    await documentClient.delete(params).promise();
+  }
+
 }
