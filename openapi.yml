@@ -8,10 +8,11 @@ info:
     This service is available as a self-hosted solution (see [Github](https://github.com/Clevyio/nopass.me)) or as a free SaaS software.
 
     The generic workflow consists of making to consecutive API calls:
-      - first, generate an authentication code (with a configurable validity duration) and send it to the target account that needs to be verified.
-      - then, the user will input their authentication code that you can then send to the validation endpoint for verification
-    Any error in the process should start a new authentication flow request.
+      - first, generate an authentication code (with a configurable validity duration) and send it to the target account that needs to be verified;
+      - then, the user will input their authentication code that you can then send to the validation endpoint for verification.
 
+
+    Any error in the process should start a new authentication flow request.
 
 servers:
   - url: https://api.nopass.me/v1
