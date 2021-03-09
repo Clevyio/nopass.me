@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+.env.local
+_data
+
+# Serverless directories
+.serverless
+.webpack
+.dynamodb
+report.*.json

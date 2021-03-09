@@ -1,0 +1,131 @@
+service: nopass-me-${opt:env, "prod"}
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-offline
+  - serverless-prune-plugin
+  - serverless-api-compression
+
+package:
+  individually: true
+
+custom:
+  dynamodb:
+    stages:
+      - v1
+    start:
+      migrate: true
+      noStart: true
+
+  contentCompression: 1024
+
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules:
+      forceExclude:
+        - aws-sdk
+    packagerOptions:
+      scripts:
+        - rm -rf node_modules/aws-sdk
+
+  serverless-offline:
+    httpPort: 3600
+    prefix: v1
+    noPrependStageInUrl: true
+    useWorkerThreads: true
+    lambdaPort: 3602
+
+  prune:
+    automatic: true
+    number: 5
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: v1
+  region: eu-west-3
+  logs:
+    restApi: true
+  apiGateway:
+    shouldStartNameWithService: true
+    apiKeys:
+      - name: ${self:service}-key-default
+    usagePlan:
+      quota:
+        limit: 2000
+        offset: 2
+        period: MONTH
+      throttle:
+        burstLimit: 20
+        rateLimit: 5
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "dynamodb:*"
+          Resource:
+            Fn::Join:
+              - ":"
+              - - arn:aws:dynamodb
+                - Ref: AWS::Region
+                - Ref: AWS::AccountId
+                - table/${self:provider.environment.AWS_DYNAMODB_TABLE}*
+        - Effect: "Allow"
+          Action: "execute-api:*"
+          Resource: "*"
+        - Effect: "Allow"
+          Action: "ses:SendRawEmail"
+          Resource: "*"
+
+  environment:
+    STAGE: ${opt:stage}
+    DEBUG: ${env:DEBUG, "false"}
+    AWS_DYNAMODB_TABLE: ${env:AWS_DYNAMODB_TABLE}
+    AWS_DYNAMODB_ENDPOINT: ${env:AWS_DYNAMODB_ENDPOINT}
+    ENCRYPTION_SECRET: ${env:ENCRYPTION_SECRET}
+    ENCRYPTION_ALGORITHM: ${env:ENCRYPTION_ALGORITHM, "sha256"}
+
+
+functions:
+  api:
+    handler: src/lambda.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+          integration: lambda-proxy
+          private: false
+      - http:
+          path: /{any+}
+          method: ANY
+          cors: true
+          integration: lambda-proxy
+          private: true
+
+
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.AWS_DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        TimeToLiveSpecification:
+          AttributeName: expires_at
+          Enabled: true
+        BillingMode: 'PAY_PER_REQUEST'

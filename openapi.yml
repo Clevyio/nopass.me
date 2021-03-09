@@ -1,0 +1,136 @@
+openapi: "3.0.2"
+info:
+  title: NoPass.me API
+  version: "1.0"
+servers:
+  - url: https://api.nopass.me/v1
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /verify/init:
+    post:
+      summary: Generate and send an authentication code
+      description: Generate and send an authentication code
+      operationId: init
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InitRequest"
+      responses:
+        "201":
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InitResponse"
+        default:
+          description: Error Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /verify/validate:
+    post:
+      summary: Validate an authentication code
+      description: Validate an authentication code. Any unsuccessful response (either the response code is not 200 or an error is generated or `response.body.success` is not true) means that the code given by the user is not valid.
+      operationId: validate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateRequest"
+      responses:
+        "200":
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidateResponse"
+        default:
+          description: Error Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+  schemas:
+    InitRequest:
+      type: object
+      required:
+        - target
+      properties:
+        target:
+          type: string
+          description: Actual target to verify. If target_type is email, should be a valid email address
+          format: email
+        target_type:
+          type: string
+          description: Type of target. Currently only email is supported
+          enum: ["email"]
+          default: email
+        subject:
+          type: string
+          description: Subject line of the notification email
+          maxLength: 256
+          default: Your NoPass.me Authorization Code
+        content:
+          type: string
+          description: HTML content for the notification email
+          pattern: '\%code\%'
+          maxLength: 1000
+          default: <h1>Hello 👋</h1>\n\n<p>Your authentication code is <b>%code%</b>.</p>\n\n<p>Stay safe on the internet!</p><p>The <a href="https://nopass.me">NoPass.me</a> team</p>
+        expires_in:
+          type: integer
+          description: In seconds, the duration of the authentication code
+          default: 300
+          minimum: 0
+          maximum: 604800
+
+    InitResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+
+    ValidateRequest:
+      type: object
+      required:
+        - target
+        - code
+      properties:
+        target:
+          type: string
+          description: Actual target to verify. If target_type is email, should be a valid email address
+          format: email
+        target_type:
+          type: string
+          description: Type of target. Currently only email is supported
+          enum: ["email"]
+          default: email
+        code:
+          type: integer
+          description: The code received by the target
+
+    ValidateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the code is valid or not
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
