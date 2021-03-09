@@ -2,6 +2,8 @@
 
 NoPass.me is an open-source passwordless account verification solution, available as a service over at [NoPass.me](https://nopass.me), or easily deployable on any AWS account with [serverless](https://serverless.com).
 
+![](./images/illustration.png)
+
 Using this service, you can easily authenticate a user's email address by sending them a one-time password with a configurable validity duration, which you can then validate accordingly.
 
 [NoPass.me](https://nopass.me) has been crafted with ❤️  by the [Clevy](https://clevy.io) team in Paris, France.
@@ -12,11 +14,11 @@ Using this service, you can easily authenticate a user's email address by sendin
 
 This is a light alternative to some other (more expensive) services such as Auth0, Okta, etc. If all you are looking for is a lightweight, fully transparent, and open-source solution to send one-time passwords to email addresses (and soon to SMS numbers as well) and validate them afterwards, this solution is perfect for you!
 
-### Validate Email Address Claims 🥸
+### 🥸 Validate Email Address Claims
 
 The very purpose of [NoPass.me](https://nopass.me) is to make sure that a user claiming to be i.e jane.doe@bigcorp.com actually has physical access to that email address. You still have to make sure they are allowed to do what they want to do, but at least you can confidently say that: yes, they are indeed Jane Doe from BigCorp, or someone who has access to their mailbox! 
 
-### Security By Design 🔐
+### 🔐 Security By Design
 
 As you can verify by yourself in this open-source code:
 - no email address is ever stored in cleartext
@@ -24,15 +26,15 @@ As you can verify by yourself in this open-source code:
 - all entries are automatically cleared (with a TTL mechanism) after the code expires
 - any wrong input results in the target's data being wiped
 
-### Free to Use, Modify, Distribute 🌟
-
-This code relies on a lot of other people's work, and we think that you should be able to deploy this solution on your own servers if you like. If using this makes you happy, then we're happy too 🥰
-
-### SaaS or Self-Hosted 🤯
+### 🤯 SaaS or Self-Hosted
 
 NoPass.me is available both as a SaaS API (request an API key on [NoPass.me](https://nopass.me)) or a self-hosted solution using this very code. You can actually deploy it automatically to your own AWS account using the Github Actions in this very repo! (or read below if you are interested in the _Manual Way™_).
 
-### Multi-Cloud (if you want it to) ☁️
+### 🌟 Free to Use, Modify, Distribute
+
+This code relies on a lot of other people's work, and we think that you should be able to deploy this solution on your own servers if you like. If using this makes you happy, then we're happy too 🥰
+
+### ☁️ Multi-Cloud (if you want it to be)
 
 So, we like AWS a lot. But it should be easy to adapt for other cloud providers, or even on-premise plain old servers. Feel free to send us a PR and we'll add your favorite cloud provider!
 
