@@ -73,26 +73,31 @@ components:
         target:
           type: string
           description: Actual target to verify. If target_type is email, should be a valid email address
+          example: john.doe@company.com
           format: email
         target_type:
           type: string
           description: Type of target. Currently only email is supported
           enum: ["email"]
+          example: email
           default: email
         subject:
           type: string
           description: Subject line of the notification email
           maxLength: 256
+          example: Your NoPass.me Authorization Code
           default: Your NoPass.me Authorization Code
         content:
           type: string
           description: HTML content for the notification email
           pattern: '\%code\%'
           maxLength: 1000
+          example: <h1>Hello 👋</h1>\n\n<p>Your authentication code is <b>%code%</b>.</p>\n\n<p>Stay safe on the internet!</p><p>The <a href="https://nopass.me">NoPass.me</a> team</p>
           default: <h1>Hello 👋</h1>\n\n<p>Your authentication code is <b>%code%</b>.</p>\n\n<p>Stay safe on the internet!</p><p>The <a href="https://nopass.me">NoPass.me</a> team</p>
         expires_in:
           type: integer
           description: In seconds, the duration of the authentication code
+          example: 300
           default: 300
           minimum: 0
           maximum: 604800
@@ -112,14 +117,17 @@ components:
         target:
           type: string
           description: Actual target to verify. If target_type is email, should be a valid email address
+          example: john.doe@company.com
           format: email
         target_type:
           type: string
           description: Type of target. Currently only email is supported
           enum: ["email"]
+          example: email
           default: email
         code:
           type: integer
+          example: 123456
           description: The code received by the target
 
     ValidateResponse:
