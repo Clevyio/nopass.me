@@ -10,6 +10,8 @@ import EmailService from '../services/email.service';
 
 const { DEBUG } = process.env;
 
+const MAX_VALIDITY_IN_SECONDS = 7 * 24 * 3600; // 7 days, expressed in seconds
+
 export default class VerifyController {
 
   /**
@@ -53,7 +55,7 @@ export default class VerifyController {
         requester_id,
         target: hashed_target,
         target_type,
-        expires_in,
+        expires_in: Math.min(expires_in, MAX_VALIDITY_IN_SECONDS),
         code: hashed_code,
       });
 
@@ -80,51 +82,62 @@ export default class VerifyController {
    * @param {*} req
    */
   static async validate(req) {
-    console.log(req);
     const {
       target,
       target_type = 'email',
       code,
     } = req.body;
 
+    /**
+     * Only the hashed data is ever compared. We don't care about the original data
+     * and did not even save it in the database for security reasons.
+     */
     const hashed_email = hash(target);
     const hashed_code = hash(`${code}`);
 
     const requester_id = getRequesterId(req);
 
-    let saved;
     try {
-      saved = await DbService.getLatestAuthCode({
+      const saved = await DbService.getLatestAuthCode({
         requester_id,
         target_type,
         target: hashed_email,
       });
 
       /**
+       * This input doesn't even match an entry in the database. Maybe:
+       * - the user tries to guess a code and makes a second try
+       * - there was never any auth code generated in the first place
+       * - the code expired and was wiped by the TTL mechanism
+       * - wrong target or target type
+       */
+      if (!saved) throw new Error('No match');
+
+      /**
+       * Once retrieved, every entry is wiped immediately, whether the input was correct or not.
+       * Never let users guess authorization codes!
+       */
+      await DbService.removeEntry(saved.PK, saved.SK).catch(_ => { });
+
+      /**
        * This scenario can happen for multiple reasons:
-       * - no request was ever made for this account
-       * - the code expired and was cleaned by TTL
-       * - the encryption key was changed
+       * - the code expired and was not yet wiped by the TTL mechanism
        */
       const now = Math.floor(Date.now() / 1000);
-      if (!saved || saved.expires_at < now) throw new Error('Expired code');
+      if (saved.expires_at < now) throw new Error('Expired code');
 
       /**
        * We have a match, but the given code does not match:
-       * - either the user typed in a wrong code
-       * - or the hash function gave a different result for some reason
+       * - the user typed in a wrong code
+       * - the encryption key was changed
+       * - the hash function gave a different result for some other reason
        */
-      if (hashed_code !== saved.code) throw new Error('Invalid input');
+      if (hashed_code !== saved.code) throw new Error('Invalid code');
 
       return { success: true };
     }
     catch (err) {
       if (DEBUG === 'true') console.error(err);
-
-      /**
-       * Any invalid input should invalidate the corresponding saved entry immediately
-       */
-      if (saved) await DbService.removeEntry(saved.PK, saved.SK).catch(_ => { });
 
       /**
        * Any error case should just return an undescript, generic unsuccessful
