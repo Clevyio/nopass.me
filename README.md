@@ -22,7 +22,7 @@ The very purpose of [NoPass.me](https://nopass.me) is to make sure that a user c
 
 [NoPass.me](https://nopass.me) was specifically designed to authentify chatbot users. In most publicly accessible chatbots, there is no way to ensure that a user is actually who they say they are. Using this solution, you can now seamlessly validate a user's identity and proceed to securely give them access to restricted resources!
 
-### 🔐 Security By Design
+### 🔐 Security And Privacy By Design
 
 As you can verify by yourself in this open-source code:
 - no email address is ever stored in cleartext
