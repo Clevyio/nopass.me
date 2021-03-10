@@ -1,22 +1,26 @@
-# NoPass.me - Passwordless MFA Authentication API
+# NoPass.me - Accountless MFA Authentication API
 
-NoPass.me is an open-source passwordless account verification solution, available as a service over at [NoPass.me](https://nopass.me), or easily deployable on any AWS account with [serverless](https://serverless.com).
+[NoPass.me](https://nopass.me) is an open-source accountless identity verification solution, available as a service at [NoPass.me](https://nopass.me), or easily deployable on any AWS account with [serverless](https://serverless.com).
 
 ![](./images/illustration.png)
 
-Using this service, you can easily authenticate a user's email address by sending them a one-time password with a configurable validity duration, which you can then validate accordingly.
+With [NoPass.me](https://nopass.me), you can easily authenticate a user's email address by sending them a one-time password with a configurable validity duration, which you can then validate accordingly.
 
 [NoPass.me](https://nopass.me) has been crafted with ❤️  by the [Clevy](https://clevy.io) team in Paris, France.
 
 👉 **Check out our other projects, such as [CSML](https://CSML.dev), an open-source programming language built to design powerful chatbot experiences.**
 
-## Main features
+## Main Features
 
-This is a light alternative to some other (more expensive) services such as Auth0, Okta, etc. If all you are looking for is a lightweight, fully transparent, and open-source solution to send one-time passwords to email addresses (and soon to SMS numbers as well) and validate them afterwards, this solution is perfect for you!
+This is a light alternative to some other (more expensive) services such as Auth0, Okta, etc. If all you are looking for is a lightweight, fully transparent, and open-source solution to authentify that a user is the rightful owner of their declared email address, [NoPass.me](https://nopass.me) is perfect for you!
 
 ### 🥸 Validate Email Address Claims
 
-The very purpose of [NoPass.me](https://nopass.me) is to make sure that a user claiming to be i.e jane.doe@bigcorp.com actually has physical access to that email address. You still have to make sure they are allowed to do what they want to do, but at least you can confidently say that: yes, they are indeed Jane Doe from BigCorp, or someone who has access to their mailbox! 
+The very purpose of [NoPass.me](https://nopass.me) is to make sure that a user claiming to be i.e jane.doe@bigcorp.com actually has physical access to that email address. You still have to make sure they are allowed to do what they want to do, but at least you can confidently say that: yes, they are indeed Jane Doe from BigCorp, or someone who has access to their mailbox!
+
+### 🤖 Perfect Match For Chatbots
+
+[NoPass.me](https://nopass.me) was specifically designed to authentify chatbot users. In most publicly accessible chatbots, there is no way to ensure that a user is actually who they say they are. Using this solution, you can now seamlessly validate a user's identity and proceed to securely give them access to restricted resources!
 
 ### 🔐 Security By Design
 
@@ -25,6 +29,7 @@ As you can verify by yourself in this open-source code:
 - all sensitive data is hashed with sha256
 - all entries are automatically cleared (with a TTL mechanism) after the code expires
 - any wrong input results in the target's data being wiped
+- everything is done server-side, no authentication data is returned by the API
 
 ### 🤯 SaaS or Self-Hosted
 
