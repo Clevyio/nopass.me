@@ -7,11 +7,20 @@ info:
 
     This service is available as a self-hosted solution (see [Github](https://github.com/Clevyio/nopass.me)) or as a free SaaS software.
 
-    The generic workflow consists of making to consecutive API calls:
-      - first, generate an authentication code (with a configurable validity duration) and send it to the target account that needs to be verified;
-      - then, the user will input their authentication code that you can then send to the validation endpoint for verification.
+    NoPass.me (both SaaS and self-hosted versions) lets you issue, then validate, unique one-time passwords for each account you are looking to authenticate.
 
-    Any error in the process should start a new authentication flow request.
+    The account validation flow is in 2 steps and goes as follows:
+
+    ![](https://github.com/Clevyio/nopass.me/raw/main/images/diagram.png)
+
+    On your end, you only need to:
+    - initiate an authentication flow when you need to verify a user's identity
+    - verify the user's code when the user enters their authentication code
+
+    If the code is valid (correct code, within the validity window), it means that the user is probably who they say they are. Otherwise (incorrect or expired code), you will receive an unsuccessful response from NoPass.me: you should not let the user in!
+
+    NoPass.me handles the full security workflow for you: generating and sending the code, verifying its validity, rejecting invalid or expired codes, and cleaning up all data afterwards. It is completely safe: **no user data is ever stored in clear text!**
+
 
 servers:
   - url: https://api.nopass.me/v1
