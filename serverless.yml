@@ -53,8 +53,6 @@ provider:
     restApi: true
   apiGateway:
     shouldStartNameWithService: true
-    apiKeys:
-      - name: ${self:service}-key-default
     usagePlan:
       quota:
         limit: 10000
