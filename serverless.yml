@@ -1,4 +1,4 @@
-service: nopass-me-${opt:env, "prod"}
+service: nopass-me-api-${opt:env, "prod"}
 
 frameworkVersion: '2'
 
